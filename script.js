@@ -63,6 +63,7 @@ const getcountryAndNeighbour = function (country) {
   console.log(request.responseText);
 
   request.addEventListener('load', function () {
+    // first function
     //   console.log(this.responseText); // here this kyword refers to the request
     const [data] = JSON.parse(this.responseText);
     //render country 1
@@ -78,10 +79,36 @@ const getcountryAndNeighbour = function (country) {
     request2.send();
 
     request2.addEventListener('load', function () {
+      // second function : - this is callback hell a callback fn within a callback fn
       console.log(this.responseText);
       const data2 = JSON.parse(this.responseText);
       renderCountry(data2, 'neighbour');
     });
   });
 };
-getcountryAndNeighbour('portugal');
+//getcountryAndNeighbour('portugal');
+
+// const request = fetch(`https://restcountries.com/v2/name/${country}`);
+
+// const getCountryData = function (country) {
+//   fetch(`https://restcountries.com/v2/name/${country}`)
+//     .then(function (response) {
+//       console.log(response);
+//       return response.json(); //response.json returns a new promise
+//     })
+//     .then(function (data) {
+//       console.log(data);
+//       renderCountry(data[0]);
+//     });
+// };
+
+const getCountryData = function (country) {
+  fetch(`https://restcountries.com/v2/name/${country}`)
+    .then(response => response.json()) //response.json returns a new promise
+
+    .then(data =>
+      // console.log(data);
+      renderCountry(data[0])
+    );
+};
+getCountryData('portugal');
