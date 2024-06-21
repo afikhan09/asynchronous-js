@@ -108,17 +108,26 @@ const getcountryAndNeighbour = function (country) {
 //     });
 // };
 
-const getCountryData = function (country) {
-  fetch(`https://restcountries.com/v2/name/${country}`)
-    .then(response => response.json()) //response.json returns a new promise
+const getJson = function (url, errorMessage = '') {
+  fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMessage}(${response.status})`);
 
+    return response.json(); //response.json returns a new promise
+  });
+};
+const getCountryData = function (country) {
+  getJson(`https://restcountries.com/v2/name/${country}`, 'country not found')
     .then(data => {
       // console.log(data);
       renderCountry(data[0]);
       const neighbour = data[0].borders?.[0];
-      return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+      if (!neighbour) throw new Error('No Neighbour found');
+      return getJson(
+        `https://restcountries.com/v2/alpha/${neighbour}`,
+        'country not found'
+      );
     })
-    .then(response => response.json())
+
     .then(data => renderCountry(data, 'neighbour'))
     .catch(err => {
       console.error(`${err} +++`);
@@ -132,3 +141,5 @@ const getCountryData = function (country) {
 btn.addEventListener('click', function () {
   getCountryData('portugal');
 });
+
+getCountryData('bcvbcb');
